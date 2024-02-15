@@ -6,9 +6,9 @@ name: sqilco-ci-cd
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches: [ "v01" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "v01" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -29,7 +29,7 @@ jobs:
 
       # Runs a single command using the runners shell
       - name: Build the Docker image
-        run: docker build -t code2cloud .
+        run: docker build -t sqilco-ci-cd .
 
       # Runs a set of commands using the runners shell
       - name: log in to Docker Hub
@@ -37,12 +37,10 @@ jobs:
         with:
           username: ${{secrets.DOCKER_USERNAME}}
           password: ${{secrets.DOCKER_PASSWD}}
-      
       - name: Push Image to Docker Hub
         run: |
-           docker tag code2cloud ${{ secrets.DOCKER_USERNAME}}/code2cloud:latest
-           docker push ${{secrets.DOCKER_USERNAME}}/code2cloud:latest
-    
+          docker tag sqilco-ci-cd ${{ secrets.DOCKER_USERNAME}}/sqilco-ci-cd:latest
+          docker push ${{secrets.DOCKER_USERNAME}}/sqilco-ci-cd:latest
   deploy:
 
     runs-on: ubuntu-latest
@@ -58,8 +56,8 @@ jobs:
         username: ${{secrets.EC2_USERNAME}}
         key: ${{secrets.EC2_PRIVATE_KEY}}
         script: |
-          sudo docker pull ${{secrets.DOCKER_USERNAME}}/code2cloud:latest
+          sudo docker pull ${{secrets.DOCKER_USERNAME}}/sqilco-ci-cd:latest
           sudo docker stop new_nodejs || true
           sudo docker rm new_nodejs || true
-          sudo docker run -d -p 3005:3000 --name=new_nodejs ${{secrets.DOCKER_USERNAME}}/code2cloud:latest
-          sudo docker 
+          sudo docker run -d -p 3005:3000 --name=new_nodejs ${{secrets.DOCKER_USERNAME}}/sqilco-ci-cd:latest
+          sudo docker
