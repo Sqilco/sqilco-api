@@ -60,4 +60,8 @@ jobs:
           sudo docker stop new_nodejs || true
           sudo docker rm new_nodejs || true
           sudo docker run -d -p 3005:3000 --name=new_nodejs ${{secrets.DOCKER_USERNAME}}/sqilco-ci-cd:latest
+<<<<<<< HEAD:.github/workflows/pipeline.yml
           sudo docker
+=======
+          sudo docker
+>>>>>>> d66e33849a8286dc56f16c39bc9d40dca62c09be:.github/pipeline.yml
