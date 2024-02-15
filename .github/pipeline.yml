@@ -1,0 +1,65 @@
+# This is a basic workflow to help you get started with Actions
+
+name: sqilco-ci-cd
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build-and-push:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # - name: download the code and add in machine
+      - name : Chekout Code
+        uses: actions/checkout@v3
+
+      # Runs a single command using the runners shell
+      - name: Build the Docker image
+        run: docker build -t code2cloud .
+
+      # Runs a set of commands using the runners shell
+      - name: log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{secrets.DOCKER_USERNAME}}
+          password: ${{secrets.DOCKER_PASSWD}}
+      
+      - name: Push Image to Docker Hub
+        run: |
+           docker tag code2cloud ${{ secrets.DOCKER_USERNAME}}/code2cloud:latest
+           docker push ${{secrets.DOCKER_USERNAME}}/code2cloud:latest
+    
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    needs: build-and-push
+
+    steps:
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{secrets.EC2_HOST}}
+        username: ${{secrets.EC2_USERNAME}}
+        key: ${{secrets.EC2_PRIVATE_KEY}}
+        script: |
+          sudo docker pull ${{secrets.DOCKER_USERNAME}}/code2cloud:latest
+          sudo docker stop new_nodejs || true
+          sudo docker rm new_nodejs || true
+          sudo docker run -d -p 3005:3000 --name=new_nodejs ${{secrets.DOCKER_USERNAME}}/code2cloud:latest
+          sudo docker 
