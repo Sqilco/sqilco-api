@@ -3,13 +3,24 @@ require('./config/dbConn');
 const express = require("express");
 const routes = require("./routes");
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-app.use('/api',routes);
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
 
-app.use(bodyParser.json());
+// parse application/json
+app.use(bodyParser.json())
 
-app.listen(PORT,()=>{
-    console.log(`Server is up and running on PORT: ${PORT}`);
+app.use(express.json())
+app.use(cookieParser());
+
+app.use(cors());
+
+app.use('/api', routes);
+
+app.listen(PORT, () => {
+     console.log(`Server is up and running on PORT: ${PORT}`);
 });

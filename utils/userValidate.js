@@ -1,7 +1,8 @@
 const Joi = require('joi');
 const UserRegistryValidate = (req, res, next) => {
     const schema = Joi.object({
-        name: Joi.string().min(3).max(100).required(),
+        first_name: Joi.string().min(3).max(100).required(),
+        last_name: Joi.string().min(3).max(100).required(),
         email : Joi.string().email().required(),
         password: Joi.string().min(4).required(),
         phone: Joi.number().min(8).required(),
