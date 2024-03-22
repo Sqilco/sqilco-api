@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-
 // Ensure cookie-parser is used before ensureAuthenticated middleware
 const ensureAuthenticated = (req, res, next) => {
     const token = req.cookies.jwtToken;
