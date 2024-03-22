@@ -40,6 +40,6 @@ jobs:
       - name: pull image from docker hub
         run: sudo docker pull hamza6/nodejs_sqilco:latest
       - name: Run Docker Container
-        run: sudo docker run -d -p 8080:8080 --name nodejs_sqilco_api -e MONGO_PASSWORD ='${{secrets.MONGODEB}}'
+        run: sudo docker run -d -p 8080:8080 --name nodejs_sqilco_api -e MONGO_PASSWORD ='${{secrets.MONGO_PASSWORD}}'
 
 
