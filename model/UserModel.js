@@ -22,7 +22,11 @@ const UserSchema = new Schema({
   phone: {
     type: Number,
     required: true
-  }
+  },
+  portfolios: [{
+    type: Schema.Types.ObjectId,
+    ref: 'portfolios'
+  }]
 });
 
 const UserModel = mongoose.model('users', UserSchema);
