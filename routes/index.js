@@ -1,13 +1,15 @@
 const express = require('express');
-const { registerUser, loginUser, getUsers, logoutUser } = require('../userController');
+const { registerUser, loginUser, getUsers, logoutUser } = require('../Controller/userController');
 const { UserRegistryValidate, userLoginValidate } = require('../utils/userValidate');
 const { ensureAuthenticated } = require('../utils/auth');
-const projectController = require('../userController/project');
+const {createProject,getProjects,getProjectsId,updateProject,deleteProject} = require('../Controller/projectController/project');
 const routes = express.Router();
 
 
-routes.get('projects', projectController.getAllProjects);
-routes.get('project', projectController.getProjectById);
+routes.get('/projects', getProjects, getProjectsId);
+routes.post('/projects',createProject);
+routes.delete('/projects',deleteProject);
+routes.put('/projects',updateProject);
 
 routes.post('/register', UserRegistryValidate ,registerUser);
 
